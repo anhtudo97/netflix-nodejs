@@ -9,7 +9,7 @@ router.post("/", verify, async(req, res) => {
         const newMovie = new Movie(req.body);
         try {
             const savedMovie = await newMovie.save();
-            res.status(200).json(savedMovie);
+            res.status(201).json(savedMovie);
         } catch (err) {
             res.status(500).json(err);
         }
@@ -19,7 +19,7 @@ router.post("/", verify, async(req, res) => {
 });
 
 // UPDATE
-router.put("/", verify, async(req, res) => {
+router.put("/:id", verify, async(req, res) => {
     if (req.user.isAdmin) {
         try {
             const updatedMovie = await Movie.findByIdAndUpdate(
@@ -27,7 +27,6 @@ router.put("/", verify, async(req, res) => {
                     $set: req.body,
                 }, { new: true }
             );
-
             res.status(200).json(updatedMovie);
         } catch (err) {
             res.status(500).json(err);
@@ -54,7 +53,7 @@ router.delete("/:id", verify, async(req, res) => {
 // GET
 router.get("/find/:id", verify, async(req, res) => {
     try {
-        const movie = await Movie.findByIdAndDelete(req.params.id);
+        const movie = await Movie.findById(req.params.id);
         res.status(200).json(movie);
     } catch (err) {
         res.status(500).json(err);
@@ -88,7 +87,7 @@ router.get("/", verify, async(req, res) => {
     if (req.user.isAdmin) {
         try {
             const movies = await Movie.find();
-            res.status(200).json(movies);
+            res.status(200).json(movies.reverse());
         } catch (err) {
             res.status(500).json(err);
         }

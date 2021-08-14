@@ -66,20 +66,22 @@ router.put("/:id", verify, async(req, res) => {
         }
 
         try {
-            const updateUser = await User.findByIdAndUpdate(
-                req.params.id, { $set: req.body }, { new: true }
+            const updatedUser = await User.findByIdAndUpdate(
+                req.params.id, {
+                    $set: req.body,
+                }, { new: true }
             );
-            res.status(200).json(updateUser);
+            res.status(200).json(updatedUser);
         } catch (err) {
             res.status(500).json(err);
         }
     } else {
-        res.status(403).json("You can update only your account");
+        res.status(403).json("You can update only your account!");
     }
 });
 
 // DELETE
-router.get("/:id", verify, async(req, res) => {
+router.delete("/:id", verify, async(req, res) => {
     if (req.user.id === req.params.id || req.user.isAdmin) {
         try {
             await User.findByIdAndDelete(req.params.id);
@@ -88,7 +90,7 @@ router.get("/:id", verify, async(req, res) => {
             res.status(500).json(err);
         }
     } else {
-        res.status(403).json("You can delete only your account");
+        res.status(403).json("You can delete only your account!");
     }
 });
 
